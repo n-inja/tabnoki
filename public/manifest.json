@@ -16,8 +16,11 @@
       "24": "images/icon24.png",
       "32": "images/icon32.png"
     },
-    "default_title": "タブノキ",
-    "default_popup": "index.html"
+    "default_title": "タブノキ"
+  },
+  "background": {
+    "persistent": false,
+    "scripts": ["background.js"]
   },
 
   "author": "✨ 💪🌚🍤 ✨",
