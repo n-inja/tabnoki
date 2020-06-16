@@ -19,7 +19,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>Hello!</p>
-        <ul>
+        <ul className="tabList">
           {tabs.map((tab) => {
             return <li key={tab.id}>{tab.url}</li>;
           })}
