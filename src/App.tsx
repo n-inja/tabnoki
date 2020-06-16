@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import logo from "./logo.svg";
 import "./App.css";
+import promisify from "./utils/promisify";
 
 function App() {
   const [tabs, setter] = useState([] as chrome.tabs.Tab[]);
-  chrome.tabs.query({ currentWindow: true }, (result) => {
-    setter(result);
-  });
+
+  const query = promisify(chrome.tabs.query);
+  query({ currentWindow: true }).then(setter);
 
   return (
     <div className="App">
