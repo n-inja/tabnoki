@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import promisify from "./utils/promisify";
-import { AAAAA } from "./tabDependent";
+import { Node } from "./tabDependent";
 
 type Props = {
-  node: AAAAA;
+  node: Node;
 };
 
 export default function TabNode(props: Props) {
@@ -22,7 +22,7 @@ export default function TabNode(props: Props) {
       {(tab?.id ?? "") + "-" + (tab?.title ?? "")}
       <ul className="tabList">
         {props.node.children.map((child) => (
-          <TabNode key={child.id} node={child}></TabNode>
+          <TabNode key={child.id} node={child} />
         ))}
       </ul>
     </li>

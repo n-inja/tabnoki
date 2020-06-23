@@ -1,15 +1,15 @@
-export interface AAAAA {
+export interface Node {
   id: number;
-  children: Array<AAAAA>;
+  children: Array<Node>;
 }
 
-type Graph = Array<AAAAA>;
+type Graph = Array<Node>;
 
 export function convert(dat: Record<string, number>): Graph {
-  const nodes = {} as Record<number, AAAAA>;
+  const nodes = {} as Record<number, Node>;
 
   const addNode = (id: number) => {
-    nodes[id] = { id, children: new Array<AAAAA>() };
+    nodes[id] = { id, children: new Array<Node>() };
   };
 
   for (const key in dat) {
