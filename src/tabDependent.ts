@@ -30,7 +30,10 @@ export function convert(dat: Record<string, number>): Graph {
 
   const ret = [] as Graph;
   for (const key in nodes) {
-    const node = nodes[key]!;
+    const node = nodes[key];
+    if (node === null) {
+      continue;
+    }
     const id = node.id;
     if (!hasParents.has(id)) {
       ret.push(node);
