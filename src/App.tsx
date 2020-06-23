@@ -7,6 +7,9 @@ function App() {
   const [tabs, setter] = useState([] as chrome.tabs.Tab[]);
 
   const query = promisify(chrome.tabs.query);
+  const info = JSON.parse(
+    new URLSearchParams(location.search.substring(1)).get("q") ?? ""
+  ); // FIXME : durty
 
   useEffect(() => {
     query({ currentWindow: true }).then((result) => {
@@ -21,7 +24,15 @@ function App() {
         <p>Hello!</p>
         <ul className="tabList">
           {tabs.map((tab) => {
-            return <li key={tab.id}>{tab.url}</li>;
+            return (
+              <li key={tab.id}>
+                {(tab.id ?? "") +
+                  "-" +
+                  (tab.title ?? "") +
+                  ": " +
+                  (info[tab.id ?? ""] ?? "")}
+              </li>
+            );
           })}
         </ul>
       </header>
