@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import promisify from "./utils/promisify";
+import { convert } from "./tabDependent";
+import TabNode from "./TabNode";
 
 function App() {
   const [tabs, setter] = useState([] as chrome.tabs.Tab[]);
@@ -9,7 +11,9 @@ function App() {
   const query = promisify(chrome.tabs.query);
   const info = JSON.parse(
     new URLSearchParams(location.search.substring(1)).get("q") ?? ""
-  ); // FIXME : durty
+  ); // FIXME : dirty
+  const dat = convert(info);
+  console.log(dat);
 
   useEffect(() => {
     query({ currentWindow: true }).then((result) => {
@@ -23,17 +27,9 @@ function App() {
         <img src={logo} className="App-logo" alt="logo" />
         <p>Hello!</p>
         <ul className="tabList">
-          {tabs.map((tab) => {
-            return (
-              <li key={tab.id}>
-                {(tab.id ?? "") +
-                  "-" +
-                  (tab.title ?? "") +
-                  ": " +
-                  (info[tab.id ?? ""] ?? "")}
-              </li>
-            );
-          })}
+          {dat.map((node) => (
+            <TabNode key={node.id} node={node}></TabNode>
+          ))}
         </ul>
       </header>
     </div>
