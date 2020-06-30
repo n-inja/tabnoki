@@ -7,6 +7,10 @@ import Collapse from "@material-ui/core/Collapse";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import TabNodeList from "./TabNodeList";
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import { removeTab } from "../utils/tab";
 
 type Props = {
   node: Node;
@@ -32,8 +36,15 @@ export default function TabNode(props: Props) {
   return (
     <div>
       <ListItem button onClick={handleClick}>
-        <ListItemText primary={(tab?.id ?? "") + "-" + (tab?.title ?? "")} />
         {hasChild && (open ? <ExpandLess /> : <ExpandMore />)}
+        <ListItemText primary={(tab?.id ?? "") + "-" + (tab?.title ?? "")} />
+        <ListItemSecondaryAction>
+          <div onClick={() => removeTab(props.node)}>
+            <IconButton edge="end" aria-label="delete">
+              <DeleteIcon />
+            </IconButton>
+          </div>
+        </ListItemSecondaryAction>
       </ListItem>
       {hasChild && (
         <Collapse in={open} timeout="auto" unmountOnExit>
