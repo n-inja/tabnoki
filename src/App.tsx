@@ -2,8 +2,7 @@ import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import { convert } from "./tabDependent";
-import TabNode from "./TabNode";
-import { Button } from "@material-ui/core";
+import TabNodeList from "./components/TabNodeList";
 
 export default function App() {
   const info = JSON.parse(
@@ -16,12 +15,7 @@ export default function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>Hello!</p>
-        <Button color="primary">Hello World</Button>
-        <ul className="tabList">
-          {dat.map((node) => (
-            <TabNode key={node.id} node={node} />
-          ))}
-        </ul>
+        <TabNodeList nodes={dat} />
       </header>
     </div>
   );
