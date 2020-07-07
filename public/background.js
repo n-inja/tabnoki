@@ -58,3 +58,17 @@ chrome.tabs.onRemoved.addListener(async function (tabId) {
   }
   await sendSession();
 });
+
+(async function onSessionRequested() {
+  chrome.runtime.onMessage.addListener(async (request) => {
+    if (request !== typeof object) return;
+    switch (request.command ?? "") {
+      case "update": {
+        await sendSession();
+        break;
+      }
+      default:
+        break;
+    }
+  });
+})();
