@@ -4,6 +4,8 @@ let tabId2Children = {};
 /** @type Record<number, number> */
 let tabId2Parent = {};
 
+let indexTabId = -1;
+
 const t2PKey = "tabId2Parent";
 const t2CKey = "tabId2Children";
 
@@ -25,15 +27,23 @@ const restoreSession = () => {
 
 chrome.browserAction.onClicked.addListener(function () {
   restoreSession();
+  if (indexTabId !== -1) {
+    chrome.tabs.update(indexTabId, { active: true });
+    return;
+  }
   const data = JSON.stringify(tabId2Parent);
   const s = encodeURIComponent(data);
-  chrome.tabs.create({ url: chrome.runtime.getURL("index.html") + "?q=" + s });
+  chrome.tabs.create(
+    { url: chrome.runtime.getURL("index.html") + "?q=" + s },
+    (tab) => {
+      indexTabId = tab.id;
+    }
+  );
   saveSession();
 });
 
 chrome.tabs.onCreated.addListener(function (tab) {
   if (tab.id === undefined) return;
-
   restoreSession();
   tabId2Parent[tab.id] = tab.openerTabId ?? -1;
   if (tab.openerTabId !== undefined) {
@@ -54,5 +64,26 @@ chrome.tabs.onRemoved.addListener(function (tabId) {
   tabId2Children[tabId]?.forEach((id) => (tabId2Parent[id] = -1));
   delete tabId2Parent[tabId];
   delete tabId2Children[tabId];
+  saveSession();
+
+  if (tabId === indexTabId) {
+    indexTabId = -1;
+  }
+  saveSession();
+});
+
+chrome.tabs.onRemoved.addListener(function (tabId) {
+  restoreSession();
+  const openerId = tabId2Parent[tabId];
+  tabId2Children[openerId] = tabId2Children[openerId]?.filter(
+    (id) => id !== tabId
+  );
+  tabId2Children[tabId]?.forEach((id) => (tabId2Parent[id] = -1));
+  delete tabId2Parent[tabId];
+  delete tabId2Children[tabId];
+
+  if (tabId === indexTabId) {
+    indexTabId = -1;
+  }
   saveSession();
 });
