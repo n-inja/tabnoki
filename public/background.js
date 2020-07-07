@@ -1,18 +1,29 @@
-const tabID2Parent = {};
+const tabId2Parent = {};
 
 /** @type Record<number, number[]> */
 const tabId2Children = {};
 
+let indexTabId = -1;
+
 chrome.browserAction.onClicked.addListener(function () {
-  const data = JSON.stringify(tabID2Parent);
+  if (indexTabId !== -1) {
+    chrome.tabs.update(indexTabId, { active: true });
+    return;
+  }
+  const data = JSON.stringify(tabId2Parent);
   const s = encodeURIComponent(data);
-  chrome.tabs.create({ url: chrome.runtime.getURL("index.html") + "?q=" + s });
+  chrome.tabs.create(
+    { url: chrome.runtime.getURL("index.html") + "?q=" + s },
+    (tab) => {
+      indexTabId = tab.id;
+    }
+  );
 });
 
 chrome.tabs.onCreated.addListener(function (tab) {
   if (tab.id === undefined) return;
 
-  tabID2Parent[tab.id] = tab.openerTabId ?? -1;
+  tabId2Parent[tab.id] = tab.openerTabId ?? -1;
   if (tab.openerTabId !== undefined) {
     if (!tabId2Children[tab.openerTabId]) {
       tabId2Children[tab.openerTabId] = [];
@@ -22,11 +33,15 @@ chrome.tabs.onCreated.addListener(function (tab) {
 });
 
 chrome.tabs.onRemoved.addListener(function (tabId) {
-  const openerId = tabID2Parent[tabId];
+  const openerId = tabId2Parent[tabId];
   tabId2Children[openerId] = tabId2Children[openerId]?.filter(
     (id) => id !== tabId
   );
-  tabId2Children[tabId]?.forEach((id) => (tabID2Parent[id] = -1));
-  delete tabID2Parent[tabId];
+  tabId2Children[tabId]?.forEach((id) => (tabId2Parent[id] = -1));
+  delete tabId2Parent[tabId];
   delete tabId2Children[tabId];
+
+  if (tabId === indexTabId) {
+    indexTabId = -1;
+  }
 });
