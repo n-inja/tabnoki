@@ -22,9 +22,11 @@ export default function TabNode(props: Props) {
   const getTab = promisify(chrome.tabs.get);
 
   useEffect(() => {
-    getTab(props.node.id).then((result) => {
-      setter(result);
-    });
+    setTimeout(() => {
+      getTab(props.node.id).then((result) => {
+        setter(result);
+      });
+    }, 500);
   }, []);
 
   const handleClick = () => {
