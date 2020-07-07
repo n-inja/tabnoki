@@ -3,11 +3,12 @@ import logo from "./logo.svg";
 import "./App.css";
 import { convert } from "./tabDependent";
 import TabNodeList from "./components/TabNodeList";
+import { useTabInfo } from "./hooks/tabInfo";
 
 export default function App() {
-  const info = JSON.parse(
+  const info = useTabInfo(
     new URLSearchParams(location.search.substring(1)).get("q") ?? ""
-  ); // FIXME : dirty
+  );
   const dat = convert(info);
 
   const orphans = dat.find((d) => d.id === -1)?.children ?? [];
