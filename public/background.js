@@ -7,6 +7,7 @@ let indexTabId = -1;
 
 chrome.browserAction.onClicked.addListener(function () {
   if (indexTabId !== -1) {
+    chrome.tabs.update(indexTabId, { active: true });
     return;
   }
   const data = JSON.stringify(tabId2Parent);
