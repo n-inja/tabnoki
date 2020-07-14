@@ -7,6 +7,7 @@ import { useTabInfo } from "./hooks/tabInfo";
 import SearchBar from "./components/SearchBar";
 import searchTab from "./searchTab";
 import { Node } from "./tabDependent";
+import Quote from "./components/Quote";
 
 const useSearch = (rootNode: Node) => {
   const [query, setQuery] = useState("");
@@ -40,7 +41,7 @@ export default function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello!</p>
+        <Quote />
         <SearchBar query={query} onChange={onChange} />
         {filteredNodes.length === 0 ? (
           <div>
