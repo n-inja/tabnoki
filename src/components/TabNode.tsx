@@ -48,7 +48,9 @@ export default function TabNode(props: Props) {
   };
 
   const openTab = () => {
-    chrome.tabs.update(tab?.id ?? -1, { active: true });
+    setTimeout(() => {
+      chrome.tabs.update(tab?.id ?? -1, { active: true });
+    }, 300)
   };
 
   const hasChild = props.node.children.length > 0;
