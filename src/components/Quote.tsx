@@ -9,7 +9,7 @@ const useQuote = () => {
     const index = Math.floor(Math.random() * quotes.length);
     setQuote(quotes[index]?.quote ?? "All tabs with you");
     setAuthor(quotes[index]?.author ?? "✨💪🌚🍤✨");
-  });
+  }, []);
   return { quote, author };
 };
 
