@@ -18,7 +18,6 @@ const useStyles = makeStyles(() =>
     quote: {
       fontStyle: "italic",
       fontSize: "1rem",
-      maxWidth: "50rem",
     },
   })
 );
@@ -28,7 +27,8 @@ export default function App() {
   const classes = useStyles();
   return (
     <blockquote className={classes.quote}>
-      {quote} - {author}
+      {quote}
+      <br /> - {author}
     </blockquote>
   );
 }

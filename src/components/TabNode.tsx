@@ -20,6 +20,10 @@ type Props = {
 
 const useStyles = makeStyles(() =>
   createStyles({
+    node: {
+      width: "100%",
+      maxWidth: "50rem",
+    },
     inactive: {
       opacity: 0.5,
     },
@@ -57,7 +61,7 @@ export default function TabNode(props: Props) {
 
   const classes = useStyles();
   return (
-    <div>
+    <div className={classes.node}>
       <ListItem button onClick={openTab}>
         {hasChild ? (
           open ? (

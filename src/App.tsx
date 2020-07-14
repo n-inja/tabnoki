@@ -42,6 +42,8 @@ export default function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <Quote />
+      </header>
+      <div className="App-container">
         <SearchBar query={query} onChange={onChange} />
         {filteredNodes.length === 0 ? (
           <div>
@@ -51,7 +53,7 @@ export default function App() {
         ) : (
           <TabNodeList nodes={filteredNodes} />
         )}
-      </header>
+      </div>
     </div>
   );
 }
