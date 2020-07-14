@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import quotes from "../assets/quotes.json";
+import { makeStyles, createStyles } from "@material-ui/core/styles";
 
 const useQuote = () => {
   const [quote, setQuote] = useState("");
@@ -12,11 +13,22 @@ const useQuote = () => {
   return { quote, author };
 };
 
+const useStyles = makeStyles(() =>
+  createStyles({
+    quote: {
+      fontStyle: "italic",
+      fontSize: "1rem",
+      maxWidth: "50rem",
+    },
+  })
+);
+
 export default function App() {
   const { quote, author } = useQuote();
+  const classes = useStyles();
   return (
-    <p className="App">
+    <blockquote className={classes.quote}>
       {quote} - {author}
-    </p>
+    </blockquote>
   );
 }
