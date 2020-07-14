@@ -151,6 +151,8 @@
     "eslint-plugin-prettier": "^3.1.4",
     "husky": "^4.2.5",
     "lint-staged": "^10.2.10",
+    "node-fetch": "^2.6.0",
+    "node-html-parser": "^1.2.20",
     "prettier": "^2.0.5"
   },
   "husky": {
