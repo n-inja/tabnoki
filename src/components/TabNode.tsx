@@ -39,7 +39,7 @@ export default function TabNode(props: Props) {
       getTab(props.node.id).then((result) => {
         setter(result);
       });
-    }, 500);
+    }, 100);
   }, []);
 
   const handleClick = () => {
