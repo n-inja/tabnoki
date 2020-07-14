@@ -1,9 +1,20 @@
+/** @type Record<number, number> */
 const tabId2Parent = {};
 
 /** @type Record<number, number[]> */
 const tabId2Children = {};
 
 let indexTabId = -1;
+
+async function sendMessage(obj) {
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage(obj, resolve);
+  });
+}
+
+async function sendSession() {
+  return await sendMessage(tabId2Parent);
+}
 
 chrome.browserAction.onClicked.addListener(function () {
   if (indexTabId !== -1) {
@@ -20,7 +31,7 @@ chrome.browserAction.onClicked.addListener(function () {
   );
 });
 
-chrome.tabs.onCreated.addListener(function (tab) {
+chrome.tabs.onCreated.addListener(async (tab) => {
   if (tab.id === undefined) return;
 
   tabId2Parent[tab.id] = tab.openerTabId ?? -1;
@@ -30,9 +41,10 @@ chrome.tabs.onCreated.addListener(function (tab) {
     }
     tabId2Children[tab.openerTabId].push(tab.id);
   }
+  await sendSession();
 });
 
-chrome.tabs.onRemoved.addListener(function (tabId) {
+chrome.tabs.onRemoved.addListener(async function (tabId) {
   const openerId = tabId2Parent[tabId];
   tabId2Children[openerId] = tabId2Children[openerId]?.filter(
     (id) => id !== tabId
@@ -44,4 +56,19 @@ chrome.tabs.onRemoved.addListener(function (tabId) {
   if (tabId === indexTabId) {
     indexTabId = -1;
   }
+  await sendSession();
 });
+
+(async function onSessionRequested() {
+  chrome.runtime.onMessage.addListener(async (request) => {
+    if (request !== typeof object) return;
+    switch (request.command ?? "") {
+      case "update": {
+        await sendSession();
+        break;
+      }
+      default:
+        break;
+    }
+  });
+})();

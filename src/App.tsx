@@ -1,14 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import { convert } from "./tabDependent";
 import TabNodeList from "./components/TabNodeList";
+import { useTabInfo } from "./hooks/tabInfo";
 
 export default function App() {
-  const info = JSON.parse(
+  const info = useTabInfo(
     new URLSearchParams(location.search.substring(1)).get("q") ?? ""
-  ); // FIXME : dirty
+  );
   const dat = convert(info);
+
+  useEffect(() => {
+    chrome.runtime.sendMessage({ command: "update" });
+  }, []);
 
   const orphans = dat.find((d) => d.id === -1)?.children ?? [];
   const others = dat.filter((d) => d.id !== -1) ?? [];
