@@ -4,6 +4,7 @@ import "./App.css";
 import { convert } from "./tabDependent";
 import TabNodeList from "./components/TabNodeList";
 import { useTabInfo } from "./hooks/tabInfo";
+import Quote from "./components/Quote";
 
 export default function App() {
   const info = useTabInfo(
@@ -22,7 +23,7 @@ export default function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello!</p>
+        <Quote />
         <TabNodeList nodes={orphans} />
         <TabNodeList nodes={others} />
       </header>
