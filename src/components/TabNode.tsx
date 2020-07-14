@@ -50,7 +50,7 @@ export default function TabNode(props: Props) {
   const openTab = () => {
     setTimeout(() => {
       chrome.tabs.update(tab?.id ?? -1, { active: true });
-    }, 300)
+    }, 300);
   };
 
   const hasChild = props.node.children.length > 0;
