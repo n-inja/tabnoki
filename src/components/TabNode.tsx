@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, MouseEvent } from "react";
 import promisify from "../utils/promisify";
 import { Node } from "../tabDependent";
 import ListItem from "@material-ui/core/ListItem";
@@ -42,8 +42,15 @@ export default function TabNode(props: Props) {
     }, 100);
   }, []);
 
-  const handleClick = () => {
+  const expand = (event: MouseEvent) => {
     setOpen(!open);
+    event.stopPropagation();
+  };
+
+  const openTab = () => {
+    setTimeout(() => {
+      chrome.tabs.update(tab?.id ?? -1, { active: true });
+    }, 300);
   };
 
   const hasChild = props.node.children.length > 0;
@@ -51,12 +58,12 @@ export default function TabNode(props: Props) {
   const classes = useStyles();
   return (
     <div>
-      <ListItem button onClick={handleClick}>
+      <ListItem button onClick={openTab}>
         {hasChild ? (
           open ? (
-            <ExpandLess />
+            <ExpandLess onClick={expand} />
           ) : (
-            <ExpandMore />
+            <ExpandMore onClick={expand} />
           )
         ) : (
           <Language className={classes.inactive} />
