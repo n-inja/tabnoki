@@ -25,6 +25,6 @@
 
   "author": "✨ 💪🌚🍤 ✨",
   "permissions": ["tabs"],
-  "version_name": "v0.0.1",
+  "version_name": "v0.0.2",
   "content_security_policy": "script-src 'self' 'sha256-UrhI+nVU4L7z+GtiQ5InhjqAyFjVKfgnXKiluNA9DqM='; object-src 'self'"
 }
