@@ -20,9 +20,7 @@ const useSearch = (rootNode: Node) => {
 };
 
 export default function App() {
-  const info = useTabInfo(
-    new URLSearchParams(location.search.substring(1)).get("q") ?? ""
-  );
+  const info = useTabInfo("{}");
   const dat = convert(info);
 
   useEffect(() => {

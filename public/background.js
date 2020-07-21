@@ -8,6 +8,9 @@ let indexTabId = -1;
 
 async function sendMessage(obj) {
   return new Promise((resolve) => {
+    if (indexTabId === -1) {
+      resolve();
+    }
     chrome.runtime.sendMessage(obj, resolve);
   });
 }
@@ -21,14 +24,9 @@ chrome.browserAction.onClicked.addListener(function () {
     chrome.tabs.update(indexTabId, { active: true });
     return;
   }
-  const data = JSON.stringify(tabId2Parent);
-  const s = encodeURIComponent(data);
-  chrome.tabs.create(
-    { url: chrome.runtime.getURL("index.html") + "?q=" + s },
-    (tab) => {
-      indexTabId = tab.id;
-    }
-  );
+  chrome.tabs.create({ url: chrome.runtime.getURL("index.html") }, (tab) => {
+    indexTabId = tab.id;
+  });
 });
 
 chrome.tabs.onCreated.addListener(async (tab) => {
@@ -42,6 +40,13 @@ chrome.tabs.onCreated.addListener(async (tab) => {
     tabId2Children[tab.openerTabId].push(tab.id);
   }
   await sendSession();
+});
+
+chrome.tabs.onUpdated.addListener(async (tabId) => {
+  console.log(indexTabId, tabId);
+  if (indexTabId !== -1 && tabId === indexTabId) {
+    await sendSession();
+  }
 });
 
 chrome.tabs.onRemoved.addListener(async function (tabId) {
