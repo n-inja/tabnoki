@@ -4,6 +4,12 @@ const tabId2Parent = {};
 /** @type Record<number, number[]> */
 const tabId2Children = {};
 
+/** @type Record<string, number[]> */
+const category2TabIds = {};
+
+/** @type Record<number, string[]> */
+const tabId2Categories = {};
+
 let indexTabId = -1;
 
 async function sendMessage(obj) {
@@ -15,9 +21,39 @@ async function sendMessage(obj) {
   });
 }
 
-async function sendSession() {
-  return await sendMessage(tabId2Parent);
+function getSession() {
+  return {
+    tabId2Parent,
+    category2TabIds,
+    tabId2Categories,
+  };
 }
+
+async function sendSession() {
+  return await sendMessage(getSession());
+}
+
+/**
+ * @param {number} tabId
+ * @param {string} category
+ */
+const addCategoryToTab = (tabId, category) => {
+  category2TabIds[category] = [...(category2TabIds[category] ?? []), tabId];
+  tabId2Categories[tabId] = [...(tabId2Categories[tabId] ?? []), category];
+};
+
+/**
+ * @param {number} tabId
+ * @param {string} category
+ */
+const removeCategoryFromTab = (tabId, category) => {
+  category2TabIds[category] = (category2TabIds[category] ?? []).filter(
+    (t) => t !== category
+  );
+  tabId2Categories[tabId] = (tabId2Categories[tabId] ?? []).filter(
+    (t) => t !== category
+  );
+};
 
 chrome.browserAction.onClicked.addListener(function () {
   if (indexTabId !== -1) {
@@ -65,11 +101,23 @@ chrome.tabs.onRemoved.addListener(async function (tabId) {
 });
 
 (async function onSessionRequested() {
-  chrome.runtime.onMessage.addListener(async (request) => {
-    if (request !== typeof object) return;
+  chrome.runtime.onMessage.addListener(async (request, _, sendResponse) => {
+    if (typeof request !== "object") return;
     switch (request.command ?? "") {
       case "update": {
-        await sendSession();
+        sendResponse(getSession());
+        break;
+      }
+      case "addCategory": {
+        /* { command: "addCategory", tabId: number, category: string } */
+        addCategoryToTab(request.tabId, request.category);
+        sendResponse(getSession());
+        break;
+      }
+      case "removeCategory": {
+        /* { command: "removeCategory", tabId: number, category: string } */
+        removeCategoryFromTab(request.tabId, request.category);
+        sendResponse(getSession());
         break;
       }
       default:

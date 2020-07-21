@@ -1,15 +1,25 @@
 export interface Node {
   id: number;
   children: Array<Node>;
+  categories: Array<string>;
 }
 
 type Graph = Array<Node>;
 
-export function convert(dat: Record<string, number>): Graph {
+export function convert(info: {
+  tabId2Parent: Record<number, number>;
+  category2TabIds: Record<string, number[]>;
+  tabId2Categories: Record<number, string[]>;
+}): Graph {
+  const dat = info.tabId2Parent;
   const nodes = {} as Record<number, Node>;
 
   const addNode = (id: number) => {
-    nodes[id] = { id, children: new Array<Node>() };
+    nodes[id] = {
+      id,
+      children: new Array<Node>(),
+      categories: info.tabId2Categories[id],
+    };
   };
 
   for (const key in dat) {

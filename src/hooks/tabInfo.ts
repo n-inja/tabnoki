@@ -1,13 +1,15 @@
 import { useState } from "react";
 
-export const useTabInfo = (initialValue: string) => {
-  const initialInfo = JSON.parse(initialValue);
-  const [info, setInfo] = useState(initialInfo as Record<string, number>);
-  chrome.runtime.onMessage.addListener((request) => {
-    if (typeof request !== "object") {
-      return;
-    }
-    setInfo(request as Record<string, number>);
+export type TabInfo = {
+  tabId2Parent: Record<number, number>;
+  category2TabIds: Record<string, number[]>;
+  tabId2Categories: Record<number, string[]>;
+};
+
+export const useTabInfo = () => {
+  const [info, setInfo] = useState({} as TabInfo);
+  chrome.runtime.onMessage.addListener((message: TabInfo) => {
+    setInfo(message);
   });
   return info;
 };
