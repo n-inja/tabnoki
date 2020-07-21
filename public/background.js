@@ -5,10 +5,10 @@ const tabId2Parent = {};
 const tabId2Children = {};
 
 /** @type Record<string, number[]> */
-const tag2TabIds = {};
+const category2TabIds = {};
 
 /** @type Record<number, string[]> */
-const tabId2Tags = {};
+const tabId2Categories = {};
 
 let indexTabId = -1;
 
@@ -24,8 +24,8 @@ async function sendMessage(obj) {
 function getSession() {
   return {
     tabId2Parent,
-    tag2TabIds,
-    tabId2Tags,
+    category2TabIds,
+    tabId2Categories,
   };
 }
 
@@ -35,20 +35,24 @@ async function sendSession() {
 
 /**
  * @param {number} tabId
- * @param {string} tag
+ * @param {string} category
  */
-const addTagToTab = (tabId, tag) => {
-  tag2TabIds[tag] = [...(tag2TabIds[tag] ?? []), tabId];
-  tabId2Tags[tabId] = [...(tabId2Tags[tabId] ?? []), tag];
+const addCategoryToTab = (tabId, category) => {
+  category2TabIds[category] = [...(category2TabIds[category] ?? []), tabId];
+  tabId2Categories[tabId] = [...(tabId2Categories[tabId] ?? []), category];
 };
 
 /**
  * @param {number} tabId
- * @param {string} tag
+ * @param {string} category
  */
-const removeTagFromTab = (tabId, tag) => {
-  tag2TabIds[tag] = (tag2TabIds[tag] ?? []).filter((t) => t !== tag);
-  tabId2Tags[tabId] = (tabId2Tags[tabId] ?? []).filter((t) => t !== tag);
+const removeCategoryFromTab = (tabId, category) => {
+  category2TabIds[category] = (category2TabIds[category] ?? []).filter(
+    (t) => t !== category
+  );
+  tabId2Categories[tabId] = (tabId2Categories[tabId] ?? []).filter(
+    (t) => t !== category
+  );
 };
 
 chrome.browserAction.onClicked.addListener(function () {
@@ -98,16 +102,22 @@ chrome.tabs.onRemoved.addListener(async function (tabId) {
 
 (async function onSessionRequested() {
   chrome.runtime.onMessage.addListener(async (request, _, sendResponse) => {
-    if (request !== typeof object) return;
+    if (typeof request !== "object") return;
     switch (request.command ?? "") {
       case "update": {
         sendResponse(getSession());
         break;
       }
-      case "addTag": {
+      case "addCategory": {
+        /* { command: "addCategory", tabId: number, category: string } */
+        addCategoryToTab(request.tabId, request.category);
+        sendResponse(getSession());
         break;
       }
-      case "removeTag": {
+      case "removeCategory": {
+        /* { command: "removeCategory", tabId: number, category: string } */
+        removeCategoryFromTab(request.tabId, request.category);
+        sendResponse(getSession());
         break;
       }
       default:

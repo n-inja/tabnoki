@@ -20,7 +20,7 @@ const useSearch = (rootNode: Node) => {
 };
 
 export default function App() {
-  const info = useTabInfo("{}");
+  const info = useTabInfo();
   const dat = convert(info);
 
   useEffect(() => {
@@ -33,6 +33,7 @@ export default function App() {
   const { query, onChange, filteredNodes } = useSearch({
     id: -1,
     children: dat,
+    categories: [],
   });
 
   return (
