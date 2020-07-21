@@ -4,6 +4,12 @@ const tabId2Parent = {};
 /** @type Record<number, number[]> */
 const tabId2Children = {};
 
+/** @type Record<string, number[]> */
+const tag2TabIds = {};
+
+/** @type Record<number, string[]> */
+const tabId2Tags = {};
+
 let indexTabId = -1;
 
 async function sendMessage(obj) {
@@ -15,9 +21,35 @@ async function sendMessage(obj) {
   });
 }
 
-async function sendSession() {
-  return await sendMessage(tabId2Parent);
+function getSession() {
+  return {
+    tabId2Parent,
+    tag2TabIds,
+    tabId2Tags,
+  };
 }
+
+async function sendSession() {
+  return await sendMessage(getSession());
+}
+
+/**
+ * @param {number} tabId
+ * @param {string} tag
+ */
+const addTagToTab = (tabId, tag) => {
+  tag2TabIds[tag] = [...(tag2TabIds[tag] ?? []), tabId];
+  tabId2Tags[tabId] = [...(tabId2Tags[tabId] ?? []), tag];
+};
+
+/**
+ * @param {number} tabId
+ * @param {string} tag
+ */
+const removeTagFromTab = (tabId, tag) => {
+  tag2TabIds[tag] = (tag2TabIds[tag] ?? []).filter((t) => t !== tag);
+  tabId2Tags[tabId] = (tabId2Tags[tabId] ?? []).filter((t) => t !== tag);
+};
 
 chrome.browserAction.onClicked.addListener(function () {
   if (indexTabId !== -1) {
@@ -65,11 +97,17 @@ chrome.tabs.onRemoved.addListener(async function (tabId) {
 });
 
 (async function onSessionRequested() {
-  chrome.runtime.onMessage.addListener(async (request) => {
+  chrome.runtime.onMessage.addListener(async (request, _, sendResponse) => {
     if (request !== typeof object) return;
     switch (request.command ?? "") {
       case "update": {
-        await sendSession();
+        sendResponse(getSession());
+        break;
+      }
+      case "addTag": {
+        break;
+      }
+      case "removeTag": {
         break;
       }
       default:
