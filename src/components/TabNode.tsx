@@ -39,6 +39,9 @@ const useStyles = makeStyles(() =>
       justifyContent: "flex-end",
       alignItems: "center",
     },
+    chip: {
+      marginLeft: "0.5rem",
+    },
   })
 );
 export default function TabNode(props: Props) {
@@ -123,6 +126,7 @@ export default function TabNode(props: Props) {
                   key={category}
                   label={category}
                   onDelete={() => removeCategory(category)}
+                  className={classes.chip}
                 />
               ))}
             <div className={classes.secondaryActionContainer}>

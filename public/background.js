@@ -106,18 +106,21 @@ chrome.tabs.onRemoved.addListener(async function (tabId) {
     switch (request.command ?? "") {
       case "update": {
         sendResponse(getSession());
+        sendMessage(getSession());
         break;
       }
       case "addCategory": {
         /* { command: "addCategory", tabId: number, category: string } */
         addCategoryToTab(request.tabId, request.category);
         sendResponse(getSession());
+        sendMessage(getSession());
         break;
       }
       case "removeCategory": {
         /* { command: "removeCategory", tabId: number, category: string } */
         removeCategoryFromTab(request.tabId, request.category);
         sendResponse(getSession());
+        sendMessage(getSession());
         break;
       }
       default:

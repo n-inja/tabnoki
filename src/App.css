@@ -23,3 +23,9 @@
   max-width: 40rem;
   margin: 0 auto;
 }
+
+.App-searchContainer {
+  display: flex;
+  padding-left: 48px;
+  overflow: hidden;
+}
